@@ -1,0 +1,2 @@
+# TaleCraftLauncher
+Launcher for TaleCraft
