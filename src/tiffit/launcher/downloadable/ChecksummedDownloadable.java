@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
@@ -48,7 +49,12 @@ public class ChecksummedDownloadable
       try
       {
         HttpURLConnection connection = makeConnection(new URL(getUrl().toString() + ".sha1"));
-        int status = connection.getResponseCode();
+        int status = 0;
+        try{
+        	status = connection.getResponseCode();
+        }catch(SocketTimeoutException e){
+        	System.out.println("Error while retrieving response code for lib " + getTarget().getName() + ":"+ e.getMessage() + "! Ignoring...");
+        }
         if (status / 100 == 2)
         {
           InputStream inputStream = connection.getInputStream();
@@ -87,7 +93,12 @@ public class ChecksummedDownloadable
     try
     {
       HttpURLConnection connection = makeConnection(getUrl());
-      int status = connection.getResponseCode();
+      int status = 0;
+      try{
+      	status = connection.getResponseCode();
+      }catch(SocketTimeoutException e){
+      	System.out.println("Error while retrieving response code for lib " + getTarget().getName() + ":"  + e.getMessage() + "! Ignoring...");
+      }
       if (status / 100 == 2)
       {
         updateExpectedSize(connection);
